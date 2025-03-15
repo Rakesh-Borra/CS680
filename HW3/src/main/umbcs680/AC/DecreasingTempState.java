@@ -22,7 +22,4 @@ public class DecreasingTempState implements State {
         System.out.println("Decreasing Temperature");
     }
 
-    public String toString() {
-        return "DecreasingTempState";
-    }
 }
