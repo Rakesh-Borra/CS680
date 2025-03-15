@@ -22,7 +22,4 @@ public class OffState implements State {
 
         System.out.println("Turn on AC to decrease the temp");
     }
-    public String toString() {
-        return "OffState";
-    }
 }
