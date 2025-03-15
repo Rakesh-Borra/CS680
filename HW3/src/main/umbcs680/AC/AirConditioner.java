@@ -44,13 +44,4 @@ public class AirConditioner {
     public int getTemperature(){
         return temperature;
     }
-
-
-    public static void main(String[] args){
-        AirConditioner ac =AirConditioner.getInstance();
-        ac.turnOn();
-        ac.increaseTemp();
-        ac.decreaseTemp();
-        ac.turnOff();
-    }
 }
