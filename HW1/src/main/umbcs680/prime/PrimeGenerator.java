@@ -42,14 +42,4 @@ public class PrimeGenerator {
         }
 	}
 	
-	public static void main(String[] args) {
-		PrimeGenerator gen = new PrimeGenerator(1,100);
-		gen.generatePrimes();
-		LinkedList<Long> primes = gen.getPrimes();
-		Iterator<Long> it = primes.iterator();
-		while(it.hasNext()) {
-			System.out.print(it.next() + ", ");
-		}
-		System.out.println("\n" + gen.getPrimes().size() + " primes are found.");
-	}
 }
