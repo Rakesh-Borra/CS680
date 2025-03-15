@@ -20,7 +20,7 @@ public class AirConditionerTest {
     public void checkTurnOnButton(){
         AirConditioner ac = AirConditioner.getInstance(); // OffState
         ac.turnOn();
-        assertEquals("OnState", ac.getCurrentState().toString());
+        assertTrue( ac.getCurrentState() instanceof OnState);
     }
 
     @Test
@@ -28,7 +28,7 @@ public class AirConditionerTest {
         AirConditioner ac = AirConditioner.getInstance();
         ac.turnOn();
         ac.turnOff();
-        assertEquals("OffState", ac.getCurrentState().toString());
+        assertTrue( ac.getCurrentState() instanceof OffState);
     }
 
     @Test
@@ -36,7 +36,7 @@ public class AirConditionerTest {
         AirConditioner ac = AirConditioner.getInstance();
         ac.turnOn();// new OnState
         ac.increaseTemp();
-        assertEquals("IncreasingTempState", ac.getCurrentState().toString());
+        assertTrue( ac.getCurrentState() instanceof IncreasingTempState);
 
     }
 
@@ -45,6 +45,6 @@ public class AirConditionerTest {
         AirConditioner ac = AirConditioner.getInstance();
         ac.turnOn();// new OnState
         ac.decreaseTemp();
-        assertEquals("DecreasingTempState",ac.getCurrentState().toString());
+        assertTrue( ac.getCurrentState() instanceof DecreasingTempState);
     }
 }
