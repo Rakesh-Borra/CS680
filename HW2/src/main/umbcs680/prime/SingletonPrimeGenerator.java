@@ -55,15 +55,4 @@ public class SingletonPrimeGenerator {
         }
 	}
 	
-	public static void main(String[] args) {
-		// created a instance un=sing singleton instead of constructor
-		SingletonPrimeGenerator gen = SingletonPrimeGenerator.getInstance(1,100);
-		gen.generatePrimes();
-		LinkedList<Long> primes = gen.getPrimes();
-		Iterator<Long> it = primes.iterator();
-		while(it.hasNext()) {
-			System.out.print(it.next() + ", ");
-		}
-		System.out.println("\n" + gen.getPrimes().size() + " primes are found.");
-	}
 }
