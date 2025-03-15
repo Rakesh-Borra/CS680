@@ -23,7 +23,4 @@ public class IncreasingTempState implements State {
         ac.changeState(new DecreasingTempState());
     }
 
-    public String toString() {
-        return "IncreasingTempState";
-    }
 }
