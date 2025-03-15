@@ -28,7 +28,4 @@ public class OnState implements State {
             ac.changeState(new DecreasingTempState());
         }
 
-        public String toString() {
-          return "OnState";
-        }
 }
