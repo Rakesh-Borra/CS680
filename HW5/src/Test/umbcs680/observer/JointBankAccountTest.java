@@ -1,106 +1,83 @@
 package umbcs680.observer;
-
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+
 
 public class JointBankAccountTest {
 
-    JointBankAccount bofa = new JointBankAccount("bofa",5000.0);
-    JointBankAccount chase = new JointBankAccount("chase",3000.0);
-    JointBankAccount capitalOne = new JointBankAccount("capitalOne",1500.0);
+    private JointBankAccount account;
+    private FamilyMember rakesh;
+    private FamilyMember adeeb;
+    private FamilyMember chandu;
+    private FamilyMember hari;
 
-    FamilyMember rakesh = new FamilyMember("rakesh");
-    FamilyMember dinesh = new FamilyMember("dinesh");
-    FamilyMember david = new FamilyMember("david");
-    FamilyMember jack = new FamilyMember("jack");
-    FamilyMember mark = new FamilyMember("mark");
+    @BeforeEach
+    public void setUp() {
+        account = new JointBankAccount(1000.0);
+        rakesh = new FamilyMember("Rakesh");
+        adeeb = new FamilyMember("Adeeb");
+        chandu = new FamilyMember("Chandu");
+        hari = new FamilyMember("Hari");
 
+        account.addObserver(rakesh);
+        account.addObserver(adeeb);
+        account.addObserver(chandu);
+        account.addObserver(hari);
 
-    // Testing whether every observers receiving notifications from every bank or not;
-    @Test
-    public void TestingNotifyObservers() {
-        bofa.addObserver(rakesh);
-        bofa.addObserver(dinesh);
-        bofa.addObserver(david);
-
-        chase.addObserver(rakesh);
-        chase.addObserver(mark);
-
-        capitalOne.addObserver(jack);
-        capitalOne.addObserver(mark);
-
-        bofa.DebitMoney(100.0);
-        chase.CreditMoney(500.0);
-        capitalOne.DebitMoney(150.0);
-        String expectedMessage1 = "bofa: 100.0 Dollars Debited from account. New balance: 4900.0";
-        String expectedMessage2 = "chase: 500.0 Dollars Credited into account. New Balance: 3500.0";
-        String expectedMessage3 = "capitalOne: 150.0 Dollars Debited from account. New balance: 1350.0";
-
-
-        assertEquals(expectedMessage1 ,dinesh.getLastMessage());
-        assertEquals(expectedMessage1, david.getLastMessage());
-        assertEquals(expectedMessage2, rakesh.getLastMessage());
-        assertEquals(expectedMessage3, mark.getLastMessage());
-        assertEquals(expectedMessage3, jack.getLastMessage());
-
+        account.addDebitObserver(rakesh);
+        account.addDebitObserver(adeeb);
+        account.addDebitObserver(chandu);
+        account.addDebitObserver(hari);
     }
 
     @Test
-    public void TestingCountObservers() {
+    public void testDeposit() {
+        account.deposit(500.0);
 
-        bofa.addObserver(rakesh);
-        bofa.addObserver(david);
-        bofa.addObserver(jack);
-
-        chase.addObserver(rakesh);
-        chase.addObserver(dinesh);
-        chase.addObserver(david);
-        chase.addObserver(mark);
-
-        capitalOne.addObserver(dinesh);
-        capitalOne.addObserver(jack);
-        capitalOne.addObserver(mark);
-
-        assertEquals(3, bofa.countObservers());
-        assertEquals(4, chase.countObservers());
-        assertEquals(3, capitalOne.countObservers());
+        // Verify that each family member received the credit notification
+        assertTrue(rakesh.getCreditNotifications().contains("Rakesh received credit notification: Bank account credited with $500.0"));
+        assertTrue(adeeb.getCreditNotifications().contains("Adeeb received credit notification: Bank account credited with $500.0"));
+        assertTrue(chandu.getCreditNotifications().contains("Chandu received credit notification: Bank account credited with $500.0"));
+        assertTrue(hari.getCreditNotifications().contains("Hari received credit notification: Bank account credited with $500.0"));
     }
 
     @Test
-    void TestingClearObservers() {
+    public void testWithdraw() {
+        account.withdraw(200.0);
 
-        bofa.addObserver(rakesh);
-        bofa.addObserver(david);
-
-        chase.addObserver(rakesh);
-        chase.addObserver(dinesh);
-
-        bofa.clearObservers();
-        chase.clearObservers();
-
-        assertTrue(bofa.getObservers().isEmpty());
-        assertTrue(chase.getObservers().isEmpty());
-
+        // Verify that each family member received the debit notification
+        assertTrue(rakesh.getDebitNotifications().contains("Rakesh received debit notification: Bank account debited with $200.0"));
+        assertTrue(adeeb.getDebitNotifications().contains("Adeeb received debit notification: Bank account debited with $200.0"));
+        assertTrue(chandu.getDebitNotifications().contains("Chandu received debit notification: Bank account debited with $200.0"));
+        assertTrue(hari.getDebitNotifications().contains("Hari received debit notification: Bank account debited with $200.0"));
     }
 
     @Test
-    void testingAddObserver() {
-        assertTrue(bofa.getObservers().isEmpty());
-        bofa.addObserver(rakesh);
-        bofa.addObserver(dinesh);
-        int expected = 2;
-        assertEquals(expected, bofa.countObservers());
+    public void testWithdrawInsufficientFunds() {
+        account.withdraw(2000.0);
+
+        // Verify that no debit notifications were sent due to insufficient funds
+        assertTrue(rakesh.getDebitNotifications().isEmpty());
+        assertTrue(adeeb.getDebitNotifications().isEmpty());
+        assertTrue(chandu.getDebitNotifications().isEmpty());
+        assertTrue(hari.getDebitNotifications().isEmpty());
     }
 
-    @Test //Testing by comparing the sizes;
-    public void TestingRemoveObserver() {
-        bofa.addObserver(rakesh);
-        bofa.addObserver(mark);
-        assertEquals(2, bofa.countObservers());
-        bofa.removeObserver(rakesh);
-        assertEquals(1, bofa.getObservers().size());
+    @Test
+    public void testRemoveObserver() {
+        account.removeObserver(adeeb);
+        account.deposit(300.0);
+
+        // Verify that Adeeb did not receive the notification after being removed
+        assertFalse(adeeb.getCreditNotifications().contains("Adeeb received credit notification: Bank account credited with $300.0"));
+
+        // Verify that other family members received the notification
+        assertTrue(rakesh.getCreditNotifications().contains("Rakesh received credit notification: Bank account credited with $300.0"));
+        assertTrue(chandu.getCreditNotifications().contains("Chandu received credit notification: Bank account credited with $300.0"));
+        assertTrue(hari.getCreditNotifications().contains("Hari received credit notification: Bank account credited with $300.0"));
     }
-
-
-
 }
+

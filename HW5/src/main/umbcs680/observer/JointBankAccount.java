@@ -1,45 +1,34 @@
 package umbcs680.observer;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class JointBankAccount extends Observable<String> {
+public class JointBankAccount extends CreditObservable {
 
     private double balance;
-    private final String bankName;
+    private final DebitObservable debitObservable = new DebitObservable() ;
 
-    public JointBankAccount(String bankName, double initialBalance) {
-         this.balance = initialBalance ;
-         this.bankName= bankName;
+    public JointBankAccount(double balance) {
+
+        this.balance = balance;
     }
 
-    public double getBalance() {
-        return balance;
+    public void deposit(double amount) {
+
+        balance += amount;
+        notifyObservers(new CreditEvent(amount));
     }
-    public String toString() {
-        return bankName;
-    }
 
-        //To debit amount and get message;
-    public void DebitMoney(double amount) {
+    public void withdraw(double amount) {
 
-        if (amount<= balance) {
+        if (amount <= balance) {
 
-             balance-= amount;
-            notifyObservers(bankName +": "+ amount + " Dollars Debited from account. New balance: " + balance);
+            balance -= amount;
+            debitObservable.notifyObservers(new DebitEvent(amount));
         } else {
-            System.out.println(bankName +": Insufficient funds to withdraw "+ amount+" Dollars");
+            System.out.println("Insufficient funds!");
         }
     }
 
-    // To credit amount and get message;
-    public void CreditMoney(double amount) {
-
-        balance+=  amount;
-        notifyObservers(bankName +": " +amount  + " Dollars Credited into account. New Balance: " + balance);
+    public void addDebitObserver(DebitObserver observer) {
+        debitObservable.addObserver(observer);
     }
 
 }
-
-
-
