@@ -76,12 +76,11 @@ public class JointBankAccountTest{
 
 
     @Test
-    public void AmountDebitedOrNot(){
+    public void AmountDebitedOrNot() {
 
         JointBankAccount jointAccount = new JointBankAccount(1000.00);
-        FamilyMember Rakesh = new FamilyMember("Rakesh");
         final String[] rakeshMessage = new String[1];
-        
+
         jointAccount.addObserver((sender, event)->{
             rakeshMessage[0] = event;
             System.out.println( "Rakesh is notified: "+event);
@@ -97,7 +96,6 @@ public class JointBankAccountTest{
         double extraAmount = 600.00;
         jointAccount.DebitMoney(extraAmount);
         assertEquals(initialBalance - withdrawAmount, jointAccount.getBalance());
-
     }
 
 
